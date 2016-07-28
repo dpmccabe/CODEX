@@ -7,44 +7,44 @@
 \usepackage[utf8]{inputenc}
 \usepackage{hyperref}
 \usepackage[margin=1in,footskip=0.25in]{geometry}
-%\VignetteIndexEntry{Using CODEX}
+%\VignetteIndexEntry{Using CODEXpar}
 \begin{document}
 \SweaveOpts{concordance=TRUE}
-\title{CODEX vignette}
+\title{CODEXpar vignette}
 \author{Yuchao Jiang
     \\
     \href{mailto:yuchaoj@wharton.upenn.edu}{yuchaoj@wharton.upenn.edu}}
 \maketitle
-This is a demo for using the \verb@CODEX@ package in R. \verb@CODEX@ is a 
+This is a demo for using the \verb@CODEXpar@ package in R. \verb@CODEXpar@ is a 
 normalization and copy number variation calling procedure for whole exome DNA 
-sequencing data. \verb@CODEX@ relies on the availability of multiple samples 
+sequencing data. \verb@CODEXpar@ relies on the availability of multiple samples 
 processed using the same sequencing pipeline for normalization, and does not 
-require matched controls. The normalization model in \verb@CODEX@ includes 
+require matched controls. The normalization model in \verb@CODEXpar@ includes 
 terms that specifically remove biases due to GC content, exon capture and 
-amplification efficiency, and latent systemic artifacts. \verb@CODEX@ also 
+amplification efficiency, and latent systemic artifacts. \verb@CODEXpar@ also 
 includes a Poisson likelihood-based recursive segmentation procedure that 
 explicitly models the count-based exome sequencing data.
 Below is an example on calling copy number variation using whole-exome 
 sequencing data of 46 HapMap samples sequenced at the Washington University 
 Genome Sequencing Center. Only the 401-500 exons from chromosome 22 are 
-analysed for illustration purposes. R packages are available at Bioconductor for \href{http://www.bioconductor.org/packages/devel/bioc/html/CODEX.html}{CODEX} and the toy dataset \href{http://www.bioconductor.org/packages/devel/data/experiment/html/WES.1KG.WUGSC.html}{WES.1KG.WUGSC}.
+analysed for illustration purposes. R packages are available at Bioconductor for \href{http://www.bioconductor.org/packages/devel/bioc/html/CODEXpar.html}{CODEXpar} and the toy dataset \href{http://www.bioconductor.org/packages/devel/data/experiment/html/WES.1KG.WUGSC.html}{WES.1KG.WUGSC}.
 
 \section*{1. Installation and online forum}
-Installation information is available \href{https://sites.google.com/a/cornell.edu/yuchaojiang/home/research/codex}{here}. The online Q\&A forum is available \href{https://groups.google.com/d/forum/codex_wes_cnv}{here}. If you've any questions regarding the software, please don't hesitate emailing us at \href{mailto:codex_wes_cnv@googlegroups.com}{codex\_wes\_cnv@googlegroups.com} and/or \\
+Installation information is available \href{https://sites.google.com/a/cornell.edu/yuchaojiang/home/research/codexpar}{here}. The online Q\&A forum is available \href{https://groups.google.com/d/forum/codexpar_wes_cnv}{here}. If you've any questions regarding the software, please don't hesitate emailing us at \href{mailto:codexpar_wes_cnv@googlegroups.com}{codexpar\_wes\_cnv@googlegroups.com} and/or \\
 \href{mailto:yuchaoj@wharton.upenn.edu}{yuchaoj@wharton.upenn.edu}.
 
-\section*{2. CODEX workflow:}
+\section*{2. CODEXpar workflow:}
 
 \subsection*{2.1 Get directories of .bam files, read in exon target positions 
 from .bed files, and get sample names.}
-The direct input of \verb@CODEX@ include: \verb@bamdir@, which is a vector indicating the
+The direct input of \verb@CODEXpar@ include: \verb@bamdir@, which is a vector indicating the
 directories of all .bam files; \verb@sampname@, which is a column vector with row entries
 of sample names; \verb@bedFile@, which indicates the directory of the .bed file (WES bait
 file, no header, sorted by start and end positions); and \verb@chr@, which specifies the 
-chromosome. \verb@CODEX@ processes the entire genome chromosome by chromosome; make sure 
+chromosome. \verb@CODEXpar@ processes the entire genome chromosome by chromosome; make sure 
 the chromosome formats are consistent between the .bed and the .bam files.
 <<bambedObj1>>=
-library(CODEX)
+library(CODEXpar)
 library(WES.1KG.WUGSC) # Load Toy data from the 1000 Genomes Project.
 dirPath <- system.file("extdata", package = "WES.1KG.WUGSC")
 bamFile <- list.files(dirPath, pattern = '*.bam$')
@@ -53,7 +53,7 @@ sampname <- as.matrix(read.table(file.path(dirPath, "sampname")))
 bedFile <- file.path(dirPath, "chr22_400_to_500.bed")
 chr <- 22
 bambedObj <- getbambed(bamdir = bamdir, bedFile = bedFile, 
-                       sampname = sampname, projectname = "CODEX_demo", chr)
+                       sampname = sampname, projectname = "CODEXpar_demo", chr)
 bamdir <- bambedObj$bamdir; sampname <- bambedObj$sampname
 ref <- bambedObj$ref; projectname <- bambedObj$projectname; chr <- bambedObj$chr
 @
@@ -89,23 +89,22 @@ normObj <- normalize(Y_qc, gc_qc, K = 1:9)
 Yhat <- normObj$Yhat; AIC <- normObj$AIC; BIC <- normObj$BIC
 RSS <- normObj$RSS; K <- normObj$K
 @
-If the WES is designed under case-control setting, CODEX estimates the exon-wise
+If the WES is designed under case-control setting, CODEXpar estimates the exon-wise
 Poisson latent factor using only the read depths in the control cohort,
 and then computes the sample-wise latent factor terms for the case samples by
-regression. \verb@normal_index@ specifies the indices of normal samples and the 
-normalization function to use under this setting is \verb$normalize2$.
+regression. \verb@normal_index@ specifies the indices of normal samples:
 <<normObj2, eval=FALSE>>=
-normObj <- normalize2(Y_qc, gc_qc, K = 1:9, normal_index=seq(1,45,2))
+normObj <- normalize(Y_qc, gc_qc, K = 1:9, normal_index=seq(1,45,2))
 Yhat <- normObj$Yhat; AIC <- normObj$AIC; BIC <- normObj$BIC
 RSS <- normObj$RSS; K <- normObj$K
 @
 \subsection*{2.6 Determine the number of latent factors. AIC, BIC, and deviance 
 reduction plots are generated in a .pdf file.}
-CODEX reports all three statistical metrics (AIC, BIC, percent of Variance 
+CODEXpar reports all three statistical metrics (AIC, BIC, percent of Variance 
 explained) and uses BIC as the default method to determine the number of 
 Poisson factors. Since false positives can be screened out through a closer 
 examination of the post-segmentation data, whereas CNV signals removed in the 
-normalization step cannot be recovered, CODEX opts for a more conservative 
+normalization step cannot be recovered, CODEXpar opts for a more conservative 
 normalization that, when in doubt, uses a smaller value of K.    
 <<choiceofK, eval=FALSE>>=
 choiceofK(AIC, BIC, RSS, K, filename = paste(projectname, "_", chr, 
@@ -129,9 +128,9 @@ set at 2.}
 
 \subsection*{2.7 Fit the Poisson log-likelihood ratio based segmentation 
 procedure to determine CNV regions across all samples.}
-For germline CNV detection, \verb@CODEX@ uses the "integer" mode; for CNV 
+For germline CNV detection, \verb@CODEXpar@ uses the "integer" mode; for CNV 
 detection involving large recurrent chromosomal aberrations in mixture 
-populations (e.g. somatic CNV detection in cancer),  \verb@CODEX@ opts to use
+populations (e.g. somatic CNV detection in cancer),  \verb@CODEXpar@ opts to use
 the "fraction" mode.
 \\
 The output file is tab delimited and has 13 columns with rows corresponding
@@ -156,7 +155,7 @@ finalcall <- segment(Y_qc, Yhat, optK = optK, K = K, sampname_qc,
 finalcall
 <<segment2, eval=FALSE>>=
 write.table(finalcall, file = paste(projectname, '_', chr, '_', optK,
-            '_CODEX_frac.txt', sep=''), sep='\t', quote=FALSE, row.names=FALSE)
+            '_CODEXpar_frac.txt', sep=''), sep='\t', quote=FALSE, row.names=FALSE)
 save.image(file = paste(projectname, '_', chr, '_image', '.rda', sep=''),
      compress='xz')
 @
@@ -164,7 +163,7 @@ save.image(file = paste(projectname, '_', chr, '_image', '.rda', sep=''),
 
 
 \section*{3. Citation}
-CODEX: a normalization and copy number variation detection method for whole exome sequencing
+CODEXpar: a normalization and copy number variation detection method for whole exome sequencing
 Yuchao Jiang; Derek A. Oldridge; Sharon J. Diskin; Nancy R. Zhang
 Nucleic Acids Research 2015;
 doi: 10.1093/nar/gku1363 (\href{http://nar.oxfordjournals.org/content/early/2015/01/23/nar.gku1363.full?keytype=ref&ijkey=8L3rzDiYw9OWSb4}{html}, \href{http://nar.oxfordjournals.org/content/early/2015/01/23/nar.gku1363.full.pdf?keytype=ref&ijkey=8L3rzDiYw9OWSb4}{pdf}).

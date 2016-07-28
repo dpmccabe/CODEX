@@ -39,8 +39,8 @@ qc(Y, sampname, chr, ref, mapp, gc,cov_thresh,length_thresh,mapp_thresh,
     for QC. 20-80 recommended.}
 }
 \details{
-It is suggested that analysis by CODEX be carried out in a batch-wise fashion if
-multiple batches exist. CODEX further filters out exons that: have extremely low
+It is suggested that analysis by CODEXpar be carried out in a batch-wise fashion if
+multiple batches exist. CODEXpar further filters out exons that: have extremely low
 coverage--median read depth across all samples less than 20 or greater than 
 4000; are extremely short--less than 20 bp; are extremely hard to map--
 mappability less than 0.9; have extreme GC content--less than 20 or greater than

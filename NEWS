@@ -1,4 +1,4 @@
-Package: CODEX
+Package: CODEXpar
 ===================
 03/07/2015
 Fixed bugs in function normalize() that relate to NaN output in AIC and BIC.

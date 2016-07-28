@@ -38,7 +38,7 @@ sampname <- as.matrix(read.table(sampnameFile))
 chr <- 22
 bambedObj <- getbambed(bamdir = bamdir, bedFile = file.path(dirPath, 
     "chr22_400_to_500.bed"), sampname = sampname,
-    projectname = "CODEX_demo", chr)
+    projectname = "CODEXpar_demo", chr)
 bamdir <- bambedObj$bamdir
 sampname <- bambedObj$sampname
 ref <- bambedObj$ref

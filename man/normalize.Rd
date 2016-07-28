@@ -23,6 +23,8 @@ normalize(Y_qc, gc_qc, K)
     Number of latent Poisson factors. Can be an integer if optimal solution has
     been chosen or a vector of integers so that AIC, BIC, and RSS are computed
     for choice of optimal k.}
+    \item{normal_index}{
+    Indices of the normal samples}
 }
 \value{
     \item{Yhat }{Normalized read depth matrix}
