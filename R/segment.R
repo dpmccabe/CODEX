@@ -58,7 +58,7 @@ segment <- function(Y_qc, Yhat, optK, K, sampname_qc, ref_qc, chr, lmax, mode) {
         mbic <- mbic - 0.5 * sum(log(tau[2:length(tau)] - tau[1:(length(tau) - 1)]))
         mbic <- mbic + (0.5 - (length(tau) - 2)) * log(num)
         return(mbic)
-      }, .parallel = T)
+      })
 
       bic_ind <- 1:which.max(mBIC)
       samp_data <- samp_data[bic_ind]
@@ -68,7 +68,7 @@ segment <- function(Y_qc, Yhat, optK, K, sampname_qc, ref_qc, chr, lmax, mode) {
     }
     
     return(samp_data)
-  }, .parallel = F, .id = NULL)
+  }, .parallel = T, .id = NULL)
   
   res <- subset(res, mbic > 0)
   
