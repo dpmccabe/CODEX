@@ -10,7 +10,7 @@ content, exon capture and amplification efficiency, and latent systemic
 artifacts.
 }
 \usage{
-normalize(Y_qc, gc_qc, K)
+normalize(Y_qc, gc_qc, K, normal_index = NA)
 }
 \arguments{
     \item{Y_qc}{
@@ -24,7 +24,7 @@ normalize(Y_qc, gc_qc, K)
     been chosen or a vector of integers so that AIC, BIC, and RSS are computed
     for choice of optimal k.}
     \item{normal_index}{
-    Indices of the normal samples}
+    Indices of the normal samples (optional)}
 }
 \value{
     \item{Yhat }{Normalized read depth matrix}

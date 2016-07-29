@@ -1,2 +1,2 @@
 export(segment, qc, normalize, getmapp, getcoverage, getbambed, choiceofK, getgc)
-import(Rsamtools, GenomeInfoDb, BSgenome.Hsapiens.UCSC.hg19, IRanges, Biostrings, plyr, speedglm)
+import(Rsamtools, GenomeInfoDb, BSgenome.Hsapiens.UCSC.hg19, IRanges, Biostrings, data.table, plyr, speedglm)
