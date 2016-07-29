@@ -34,7 +34,7 @@ segment <- function(Y_qc, Yhat, optK, K, sampname_qc, ref_qc, chr, lmax, mode) {
     lratio <- (1 - chat / 2) * lambda + log((chat + 1e-04) / 2.0001) * yact
     chat[chat > 5] <- 5
     
-    samp_data <- data.table(samp = sampnames[sampno], chr = chr, i, j, yact, lambda, chat, lratio)[lratio > 0, ]
+    samp_data <- data.table(samp = sampname_qc[sampno], chr = chr, i, j, yact, lambda, chat, lratio)[lratio > 0, ]
     
     if (sum(lratio > 0) > 0) {
       if (sum(lratio > 0) >= 2) {
