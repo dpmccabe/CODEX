@@ -72,7 +72,7 @@ segment <- function(Y_qc, Yhat, optK, K, sampname_qc, ref_qc, chr, lmax, mode) {
   
   res <- subset(res, mbic > 0)
   
-  ret_cols <- c("sample_name", "chr", "cnv", "st_bp", "ed_bp", "length_kb", "st_exon", "ed_exon", "raw_cov", "norm_cov", "lratio", "mBIC")
+  ret_cols <- c("sample_name", "chr", "cnv", "copy_no", "st_bp", "ed_bp", "length_kb", "st_exon", "ed_exon", "raw_cov", "norm_cov", "lratio", "mBIC")
 
   if (nrow(res) > 0) {
     res$st_bp <- start(ref_qc)[res$i]
