@@ -1,5 +1,5 @@
 normalize <- function(Y_qc, gc_qc, K, normal_index = NA) {
-  if (paired <- is.array(normal_index)) {
+  if (paired <- length(normal_index) > 1) {
     if (max(K) > length(normal_index))
       stop("Number of latent Poisson factors K cannot exceed the number of normal samples!")
   } else {
