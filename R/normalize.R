@@ -86,10 +86,10 @@ normalize <- function(Y_qc, gc_qc, K, normal_index = NA) {
         message("Rowwise GLM...", appendLF = F)
         if (paired) {
           ghat <- aaply(1:nrow(Y_qc), 1, function(s) {
-            temp <- try(speedglm.wfit(Y_qc[s, normal_index], hhat[normal_index, ], intercept = F, offset = L[s, normal_index], family = poisson())$coefficients, silent = F)
+            temp <- try(speedglm.wfit(Y_qc[s, normal_index], as.matrix(hhat[normal_index, ]), intercept = F, offset = L[s, normal_index], family = poisson())$coefficients, silent = F)
             
             if (is.character(temp)) {
-              temp <- speedglm.wfit(log(pmax(Y_qc[s, normal_index], 1)), hhat[normal_index, ], intercept = F, offset = log(L[s, normal_index]))$coefficients
+              temp <- speedglm.wfit(log(pmax(Y_qc[s, normal_index], 1)), as.matrix(hhat[normal_index, ]), intercept = F, offset = log(L[s, normal_index]))$coefficients
             }
             return(temp)
           }, .parallel = T)
