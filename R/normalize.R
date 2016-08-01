@@ -86,7 +86,7 @@ normalize <- function(Y_qc, gc_qc, K, normal_index = NA) {
         message("Rowwise GLM...", appendLF = F)
         if (paired) {
           ghat <- aaply(1:nrow(Y_qc), 1, function(s) {
-            temp <- try(speedglm.wfit(Y_qc[s,normal_index], hhat[normal_index, ], intercept = F, offset = L[s, normal_index], family = poisson())$coefficients, silent = F)
+            temp <- try(speedglm.wfit(Y_qc[s, normal_index], hhat[normal_index, ], intercept = F, offset = L[s, normal_index], family = poisson())$coefficients, silent = F)
             
             if (is.character(temp)) {
               temp <- speedglm.wfit(log(pmax(Y_qc[s, normal_index], 1)), hhat[normal_index, ], intercept = F, offset = log(L[s, normal_index]))$coefficients
@@ -168,8 +168,12 @@ normalize <- function(Y_qc, gc_qc, K, normal_index = NA) {
     hhat <- hhatlist[[optIter]]
     
     betahatmat <- matrix(nrow = nrow(Y_qc), ncol = ncol(Y_qc), data = betahat, byrow = F)
-    Yhat[[ki]] <- round(fhat * Nmat * betahatmat * exp(ghat %*% t(hhat)), 0)
-    
+
+    if (paired)
+      Yhat[[ki]] <- pmax(round(fhat * Nmat * betahatmat * exp(ghat %*% t(hhat)), 0), 1)
+    else
+      Yhat[[ki]] <- round(fhat * Nmat * betahatmat * exp(ghat %*% t(hhat)), 0)
+
     AIC[ki] <- 2 * sum(Y_qc * log(pmax(Yhat[[ki]], 1)) - Yhat[[ki]]) - 2 * (length(ghat) + length(hhat))
     BIC[ki] <- 2 * sum(Y_qc * log(pmax(Yhat[[ki]], 1)) - Yhat[[ki]]) - (length(ghat) + length(hhat)) * log(length(Y_qc))
     RSS[ki] <- sum((Y_qc - Yhat[[ki]])^2 / length(Y_qc))
