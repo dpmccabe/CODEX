@@ -1,5 +1,5 @@
 normalize <- function(Y_qc, gc_qc, K, normal_index = NA) {
-  if (paired <- length(normal_index) > 1) {
+  if (paired <- is.numeric(normal_index)) {
     if (max(K) > length(normal_index))
       stop("Number of latent Poisson factors K cannot exceed the number of normal samples!")
   } else {
@@ -101,7 +101,7 @@ normalize <- function(Y_qc, gc_qc, K, normal_index = NA) {
               temp <- speedglm.wfit(log(pmax(Y_qc[s, ], 1)), hhat, intercept = F, offset = log(L[s, ]))$coefficients
             }
             return(temp)
-          }, .parallel = T)          
+          }, .parallel = T)
         }
         message("done")
         
